@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoodFluweel.ValueObjects", "..\RoodFluweel.ValueObjects\RoodFluweel.ValueObjects.csproj", "{6C4A3239-307F-13F9-D6C3-6A9128D154A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoodFluweel.ValueObjects.Tests", "..\RoodFluweel.ValueObjects.Tests\RoodFluweel.ValueObjects.Tests.csproj", "{70B031F8-BBA6-64EE-BCB7-9CC5813AFA9A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C4A3239-307F-13F9-D6C3-6A9128D154A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C4A3239-307F-13F9-D6C3-6A9128D154A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C4A3239-307F-13F9-D6C3-6A9128D154A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C4A3239-307F-13F9-D6C3-6A9128D154A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70B031F8-BBA6-64EE-BCB7-9CC5813AFA9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70B031F8-BBA6-64EE-BCB7-9CC5813AFA9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70B031F8-BBA6-64EE-BCB7-9CC5813AFA9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70B031F8-BBA6-64EE-BCB7-9CC5813AFA9A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3DCFE69D-59A9-496E-BDB4-B11613D95468}
+	EndGlobalSection
+EndGlobal
