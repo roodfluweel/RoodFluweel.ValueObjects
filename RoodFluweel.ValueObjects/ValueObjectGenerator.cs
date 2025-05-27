@@ -1,61 +1,60 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RoodFluweel.ValueObjects;
-
-[Generator]
-public class ValueObjectGenerator : ISourceGenerator
+namespace RoodFluweel.ValueObjects.Generators
 {
-    public void Initialize(GeneratorInitializationContext context)
+    [Generator]
+    public class ValueObjectGenerator : IIncrementalGenerator
     {
-        context.RegisterForSyntaxNotifications(() => new ValueObjectReceiver());
-    }
-
-    public void Execute(GeneratorExecutionContext context)
-    {
-        if (context.SyntaxReceiver == null)
+        public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            return;
-        }
-        if (context.SyntaxReceiver is not ValueObjectReceiver receiver)
-        {
-            return;
-        }
+            // 1. Identify types marked with [ValueObject]
+            var candidateTypes = context.SyntaxProvider
+                .CreateSyntaxProvider(
+                    predicate: static (node, _) =>
+                        node is TypeDeclarationSyntax tds && tds.AttributeLists.Count > 0,
+                    transform: static (ctx, _) =>
+                    {
+                        var typeDecl = (TypeDeclarationSyntax)ctx.Node;
+                        var symbol = ctx.SemanticModel.GetDeclaredSymbol(typeDecl) as INamedTypeSymbol;
+                        if (symbol == null) return null;
 
-        foreach (TypeDeclarationSyntax candidate in receiver.Candidates)
-        {
-            SemanticModel model = context.Compilation.GetSemanticModel(candidate.SyntaxTree);
-            ISymbol symbol = model.GetDeclaredSymbol(candidate);
+                        // Check for [ValueObject] attribute
+                        foreach (var attr in symbol.GetAttributes())
+                        {
+                            var name = attr.AttributeClass?.ToDisplayString();
+                            if (name == "RoodFluweel.ValueObjects.ValueObjectAttribute"
+                                || name == "ValueObjectAttribute")
+                            {
+                                return symbol;
+                            }
+                        }
+                        return null;
+                    })
+                .Where(static t => t is not null)!;
 
-            if (symbol is not INamedTypeSymbol namedType)
+            // 2. Collect all matching symbols
+            var allSymbols = candidateTypes.Collect();
+
+            // 3. Combine with the compilation
+            var compilationAndSymbols = context.CompilationProvider.Combine(allSymbols);
+
+            // 4. Register output: generate code for each symbol
+            context.RegisterSourceOutput(compilationAndSymbols, static (spc, source) =>
             {
-                continue;
-            }
+                var (compilation, symbols) = source;
+                foreach (var symbol in symbols.Distinct(SymbolEqualityComparer.Default))
+                {
+                    var typeSymbol = (INamedTypeSymbol)symbol;
 
-            if (!namedType.GetAttributes().Any(a => a.AttributeClass?.Name == "ValueObjectAttribute"))
-            {
-                continue;
-            }
-
-            var source = ValueObjectCodeBuilder.GenerateValueObject(namedType);
-            context.AddSource($"{namedType.Name}_ValueObject.g.cs", SourceText.From(source, Encoding.UTF8));
-        }
-    }
-
-    internal class ValueObjectReceiver : ISyntaxReceiver
-    {
-        public List<TypeDeclarationSyntax> Candidates { get; } = [];
-
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-        {
-            if (syntaxNode is TypeDeclarationSyntax { AttributeLists.Count: > 0 } tds)
-            {
-                Candidates.Add(tds);
-            }
+                    // Generate the code using your existing builder
+                    var code = ValueObjectCodeBuilder.GenerateValueObject(typeSymbol!);
+                    spc.AddSource($"{typeSymbol!.Name}_ValueObject.g.cs", SourceText.From(code, Encoding.UTF8));
+                }
+            });
         }
     }
 }

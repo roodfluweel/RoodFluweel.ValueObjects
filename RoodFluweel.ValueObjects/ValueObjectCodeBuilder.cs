@@ -1,5 +1,5 @@
-using System.Linq;
 using Microsoft.CodeAnalysis;
+using System.Linq;
 
 namespace RoodFluweel.ValueObjects;
 

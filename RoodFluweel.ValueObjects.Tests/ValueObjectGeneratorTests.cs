@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using RoodFluweel.ValueObjects.Generators;
 using Shouldly;
 using System.Text;
 
@@ -9,20 +10,6 @@ namespace RoodFluweel.ValueObjects.Tests;
 
 public class ValueObjectGeneratorTests
 {
-    [Fact]
-    public void Execute_WithoutContext_ShouldNotAddAdditionalFiles()
-    {
-        // Arrange
-        var generator = new ValueObjectGenerator();
-        var context = new GeneratorExecutionContext();
-
-        // Act
-        generator.Execute(context);
-
-        // Assert
-        context.AdditionalFiles.IsDefaultOrEmpty.ShouldBeTrue();
-    }
-
     [Fact]
     public void GeneratorProduces_EqualsAndGetHashCode_ForFoo()
     {

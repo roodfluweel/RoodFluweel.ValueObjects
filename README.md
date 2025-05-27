@@ -22,11 +22,15 @@ Other benefits:
 
 Add the NuGet package to your project:
 
+```
 dotnet add package RoodFluweel.ValueObjects
+```
 
 Or via the Package Manager:
 
+```
 Install-Package RoodFluweel.ValueObjects
+```
 
 ## Usage
 
